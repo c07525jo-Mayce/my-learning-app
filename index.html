@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的學習樂園｜國語學習系統</title>
+<style>
+:root{--primary:#6c63ff;--primary2:#918cff;--bg:#f5f6fb;--card:#fff;--text:#293044;--muted:#7a8399}
+*{box-sizing:border-box} body{margin:0;font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;background:var(--bg);color:var(--text)}
+header{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;text-align:center;padding:36px 20px 30px}
+header h1{margin:0;font-size:clamp(30px,5vw,46px)} header p{margin:10px 0 0;font-size:17px;opacity:.92}
+.container{max-width:1050px;margin:auto;padding:24px 18px 45px}.screen{display:none}.screen.active{display:block}
+.back{border:none;background:#fff;color:var(--primary);font-weight:bold;padding:10px 16px;border-radius:12px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.08);margin-bottom:16px}
+.title{text-align:center;margin:8px 0 25px}.title h2{margin:0;font-size:28px}.title p{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
+.card{border:none;background:var(--card);border-radius:20px;min-height:150px;padding:20px;cursor:pointer;box-shadow:0 5px 18px rgba(42,47,70,.08);transition:.18s transform;text-align:center}
+.card:hover{transform:translateY(-4px)}.card .icon{font-size:48px;margin-bottom:10px}.card .name{font-size:20px;font-weight:800}.card .sub{font-size:13px;color:var(--muted);margin-top:7px}
+.semesters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;max-width:700px;margin:auto}
+.semester{border:none;border-radius:24px;padding:45px 15px;background:white;box-shadow:0 5px 18px rgba(42,47,70,.08);cursor:pointer;font-size:25px;font-weight:bold}
+.lesson-list{display:grid;gap:12px;max-width:780px;margin:auto}
+.lesson{width:100%;border:none;background:white;padding:19px 22px;border-radius:16px;box-shadow:0 4px 15px rgba(42,47,70,.07);cursor:pointer;text-align:left;display:flex;align-items:center;gap:15px;font-size:18px;font-weight:bold}
+.status{margin-left:auto;font-size:13px;color:#fff;background:#47a76a;padding:5px 10px;border-radius:20px}.locked{opacity:.55;cursor:default}.locked .status{background:#9ba2b2}
+.breadcrumb{text-align:center;color:var(--muted);font-size:14px;margin-bottom:15px}.placeholder{background:white;border-radius:20px;padding:45px 25px;text-align:center;box-shadow:0 5px 18px rgba(42,47,70,.08)}.big{font-size:60px}
+iframe{width:100%;height:calc(100vh - 30px);min-height:720px;border:0;border-radius:18px;background:#fff;box-shadow:0 5px 18px rgba(42,47,70,.08)}
+@media(max-width:600px){.semesters{gap:12px}.semester{padding:32px 8px;font-size:21px}.card{min-height:135px;padding:15px}.card .icon{font-size:40px}}
+</style>
+</head>
+<body>
+<header><h1>🌟 我的學習樂園</h1><p>選擇科目，開始你的學習冒險！</p></header>
+<div class="container">
+
+<section id="subjects" class="screen active">
+<div class="title"><h2>📚 選擇學習科目</h2><p>目前先完整建立國語，其他科目未來再慢慢加入</p></div>
+<div class="grid">
+<button class="card" onclick="chooseSubject('國語','📖')"><div class="icon">📖</div><div class="name">國語</div><div class="sub">目前已有完整課程</div></button>
+<button class="card" onclick="comingSoon('數學','🔢')"><div class="icon">🔢</div><div class="name">數學</div><div class="sub">即將新增</div></button>
+<button class="card" onclick="comingSoon('社會','🌏')"><div class="icon">🌏</div><div class="name">社會</div><div class="sub">即將新增</div></button>
+<button class="card" onclick="comingSoon('自然','🔬')"><div class="icon">🔬</div><div class="name">自然</div><div class="sub">即將新增</div></button>
+<button class="card" onclick="comingSoon('英文','🔤')"><div class="icon">🔤</div><div class="name">英文</div><div class="sub">即將新增</div></button>
+</div></section>
+
+<section id="grades" class="screen">
+<button class="back" onclick="go('subjects')">← 回到科目</button>
+<div class="title"><div class="breadcrumb" id="subjectCrumb"></div><h2>🎓 選擇年級</h2></div>
+<div class="grid" id="gradeGrid"></div></section>
+
+<section id="semesters" class="screen">
+<button class="back" onclick="go('grades')">← 回到年級</button>
+<div class="title"><div class="breadcrumb" id="gradeCrumb"></div><h2>🗓️ 選擇學期</h2></div>
+<div class="semesters"><button class="semester" onclick="chooseSemester('上學期')">☀️<br>上學期</button><button class="semester" onclick="chooseSemester('下學期')">❄️<br>下學期</button></div>
+</section>
+
+<section id="lessons" class="screen">
+<button class="back" onclick="go('semesters')">← 回到學期</button>
+<div class="title"><div class="breadcrumb" id="semesterCrumb"></div><h2>📚 選擇課程</h2></div>
+<div class="lesson-list" id="lessonList"></div></section>
+
+<section id="lesson1" class="screen">
+<button class="back" onclick="go('lessons')">← 回到課程</button>
+<iframe src="lesson1.html" title="第一課 水陸小高手"></iframe>
+</section>
+
+<section id="coming" class="screen">
+<button class="back" onclick="go('subjects')">← 回到科目</button>
+<div class="placeholder"><div class="big">🚧</div><h2 id="comingTitle">建置中</h2><p>這個科目未來可以直接加入同樣的完整學習架構。</p></div>
+</section>
+
+</div>
+<script>
+const state={subject:'',icon:'',grade:'',semester:''};
+const grades=['一年級','二年級','三年級','四年級','五年級','六年級','國一','國二','國三','高一','高二','高三'];
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function chooseSubject(subject,icon){state.subject=subject;state.icon=icon;document.getElementById('subjectCrumb').textContent=`${icon} ${subject}`;document.getElementById('gradeGrid').innerHTML=grades.map(g=>{const available=g==='四年級';return `<button class="card" onclick="chooseGrade('${g}')"><div class="icon">${available?'📚':'🎓'}</div><div class="name">${g}</div><div class="sub">${available?'已有 2 堂課程':'即將新增'}</div></button>`}).join('');go('grades');}
+function chooseGrade(g){state.grade=g;document.getElementById('gradeCrumb').textContent=`${state.icon} ${state.subject}　›　${g}`;go('semesters');}
+function chooseSemester(s){state.semester=s;document.getElementById('semesterCrumb').textContent=`${state.icon} ${state.subject}　›　${state.grade}　›　${s}`;const list=document.getElementById('lessonList');if(state.subject==='國語'&&state.grade==='四年級'&&s==='上學期'){list.innerHTML=`<button class="lesson" onclick="go('lesson1')"><span>📖</span><span>第一課｜水陸小高手</span><span class="status">可學習</span></button><button class="lesson locked"><span>📖</span><span>第二課｜放學後</span><span class="status">整理中</span></button><button class="lesson locked"><span>📖</span><span>第三課</span><span class="status">建置中</span></button>`;}else{list.innerHTML=`<div class="placeholder"><div class="big">🚧</div><h2>課程建置中</h2><p>目前先從四年級國語上學期開始整理。</p></div>`;}go('lessons');}
+function comingSoon(name,icon){document.getElementById('comingTitle').textContent=`${icon} ${name}｜建置中`;go('coming');}
+</script>
+</body></html>
