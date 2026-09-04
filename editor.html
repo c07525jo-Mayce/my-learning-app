@@ -283,7 +283,7 @@ function preview(capture=true){
      return `<div class="question"><b>第 ${i+1} 題：${esc(x.q)}</b><ol type="A">${(x.options||[]).map(o=>'<li>'+esc(o)+'</li>').join('')}</ol>正確答案：${esc(x.answer)}</div>`;
    }).join('');
  }
- preview.innerHTML=h||'<span class="small">尚未輸入內容</span>';
+ $('preview').innerHTML=h||'<span class="small">尚未輸入內容</span>';
 }
 
 function addCustom(){
