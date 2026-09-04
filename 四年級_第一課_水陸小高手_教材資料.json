@@ -1,0 +1,124 @@
+{
+  "subject": "國語",
+  "stage": "國小",
+  "grade": "四年級",
+  "semester": "上學期",
+  "lessonNo": "第一課",
+  "lessonTitle": "水陸小高手",
+  "sections": [
+    {
+      "id": "s0",
+      "name": "📖 課文",
+      "type": "lesson",
+      "data": {
+        "text": "",
+        "images": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    {
+      "id": "s1",
+      "name": "🧱 課文結構",
+      "type": "text",
+      "data": {
+        "text": "<font face=\"新細明體\"><span style=\"font-size: 14px;\"><b style=\"\"><font color=\"#36c44d\">壹、游泳</font></b></span></font><div><font face=\"新細明體\"><span style=\"font-size: 14px;\"><b style=\"\">一. 想像：</b></span></font><div><font color=\"#000000\" face=\"新細明體\"><span style=\"font-size: 14px;\"><b>1. 自由的魚</b></span></font></div><div><font color=\"#000000\" face=\"新細明體\"><span style=\"font-size: 14px;\"><b>2. 巨大的蛙</b></span></font></div><div><font color=\"#000000\" face=\"新細明體\"><span style=\"font-size: 14px;\"><b>3. 飛舞的蝶\n二. 情景：</b></span></font></div><div><font color=\"#000000\" face=\"新細明體\"><span style=\"font-size: 14px;\"><b>1. 歡笑一陣陣</b></span></font></div><div><font face=\"新細明體\"><span style=\"font-size: 14px;\"><b style=\"\"><font color=\"#000000\">2. 水珠一串串</font></b></span></font></div><div><font face=\"新細明體\"><span style=\"font-size: 14px;\"><b style=\"\"><font color=\"#000000\">三. 結果：自信、壯志與多采多姿的人生。</font></b></span></font></div><div><font face=\"新細明體\"><span style=\"font-size: 14px;\"><b style=\"\"><font color=\"#000000\"><br></font></b></span></font></div><div><font face=\"新細明體\"><span style=\"font-size: 14px;\"><b style=\"\"><font color=\"#1ec8c5\">貳、溜直排輪</font></b></span></font></div><div><font face=\"新細明體\"><span style=\"font-size: 14px;\"><b style=\"\"><font color=\"#000000\">一. 想像：</font></b></span></font></div><div><font face=\"新細明體\"><span style=\"font-size: 14px;\"><b style=\"\"><font color=\"#000000\">1. 飛鷹</font></b></span></font></div><div><font face=\"新細明體\"><span style=\"font-size: 14px;\"><b style=\"\"><font color=\"#000000\">2. 陀螺</font></b></span></font></div><div><b style=\"font-size: 14px; font-family: 新細明體;\"><font color=\"#000000\">二. 情景：</font></b></div><div><b style=\"font-size: 14px; font-family: 新細明體;\"><font color=\"#000000\">1. 風而吹過、景物消失</font></b></div><div><font face=\"新細明體\"><span style=\"font-size: 14px;\"><b style=\"\"><font color=\"#000000\">2. 陽光晃動、汗水滴落</font></b></span></font></div><div><font face=\"新細明體\"><span style=\"font-size: 14px;\"><b style=\"\"><font color=\"#000000\">三. 動作：</font></b></span></font></div><div><font face=\"新細明體\"><span style=\"font-size: 14px;\"><b style=\"\"><font color=\"#000000\">1. 滑行加速\n2. 跳躍轉身</font></b></span></font></div><div><font face=\"新細明體\"><span style=\"font-size: 14px;\"><b style=\"\"><font color=\"#000000\">四. 感覺：\n1. 天寬地大\n2. 舞姿迷人</font></b></span></font></div><div><font face=\"新細明體\"><span style=\"font-size: 14px;\"><b style=\"\"><font color=\"#000000\">五. 結果：</font></b></span></font><b style=\"font-size: 14px; color: rgb(0, 0, 0); font-family: 新細明體;\">煩惱被風帶走，快樂緊緊跟隨。</b></div><div><div><!--EndFragment--></div></div></div>"
+      }
+    },
+    {
+      "id": "s2",
+      "name": "💡 課文大意",
+      "type": "text",
+      "data": {
+        "text": ""
+      }
+    },
+    {
+      "id": "s3",
+      "name": "❓ 閱讀理解",
+      "type": "text",
+      "data": {
+        "text": ""
+      }
+    },
+    {
+      "id": "s4",
+      "name": "✏️ 生字",
+      "type": "characters",
+      "data": {
+        "intro": "",
+        "items": [
+          {
+            "word": "泳",
+            "pos": "動",
+            "rad": "水",
+            "stroke": "5/8",
+            "meaning": "在水中浮動"
+          },
+          {
+            "word": "串",
+            "pos": "",
+            "rad": "丨",
+            "stroke": "6/7",
+            "meaning": "⑴量 計算成串物品的單位。\n例：一串念珠、兩串銅錢\n⑵動 把東西連貫在一起。\n例：貫串、串珠子\n\n⑶動 勾結做壞事。\n例：串通、串供、串騙\n\n⑷動 扮演。\n例：客串、反串\n\n⑸動 隨意往來、走動。\n例：串門子"
+          }
+        ]
+      }
+    },
+    {
+      "id": "s5",
+      "name": "🔤 字音字形",
+      "type": "sound",
+      "data": {
+        "intro": "",
+        "items": []
+      }
+    },
+    {
+      "id": "s6",
+      "name": "⭕ 圈詞",
+      "type": "words",
+      "data": {
+        "intro": "",
+        "items": []
+      }
+    },
+    {
+      "id": "s7",
+      "name": "🚂 成語列車",
+      "type": "idioms",
+      "data": {
+        "intro": "",
+        "items": []
+      }
+    },
+    {
+      "id": "s8",
+      "name": "💬 句型",
+      "type": "sentence",
+      "data": {
+        "intro": "",
+        "items": []
+      }
+    },
+    {
+      "id": "s9",
+      "name": "✨ 修辭分析",
+      "type": "text",
+      "data": {
+        "text": ""
+      }
+    },
+    {
+      "id": "s10",
+      "name": "🏆 大挑戰",
+      "type": "challenge",
+      "data": {
+        "intro": "",
+        "items": []
+      }
+    }
+  ]
+}
