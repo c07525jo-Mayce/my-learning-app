@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的學習樂園｜第一課</title>
+<style>
+:root{--main:#6b8f71;--bg:#f7f5ee;--card:#fff;--text:#334}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:"Microsoft JhengHei",Arial,sans-serif;color:var(--text)}
+header{background:linear-gradient(135deg,#7fa987,#a8c59b);color:white;padding:22px 18px;text-align:center;box-shadow:0 2px 8px #0002}
+header h1{margin:0;font-size:24px} header p{margin:7px 0 0;opacity:.95}
+#app{max-width:1000px;margin:24px auto;padding:0 16px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.tab{border:0;background:#e8eee5;padding:10px 14px;border-radius:999px;cursor:pointer;font-size:15px}
+.tab.active{background:var(--main);color:#fff}
+.card{background:var(--card);border-radius:18px;padding:24px;box-shadow:0 4px 16px #00000010;min-height:300px}
+.card h2{margin-top:0;color:#507457;border-bottom:2px solid #e5eee3;padding-bottom:12px}
+.content{line-height:1.9;font-size:17px}
+.content img,.lesson-image{max-width:100%;height:auto;border-radius:10px;margin:12px 0;display:block}
+.image-list{display:flex;flex-direction:column;gap:12px}
+.item{border:1px solid #e2e7df;border-radius:12px;padding:16px;margin:12px 0;background:#fcfdfb}
+.item b{color:#4e7355}.label{font-weight:bold;color:#627c67}
+.loading,.error{text-align:center;padding:70px 20px;color:#667}
+.challenge{padding:16px;border:1px solid #e5e5e5;border-radius:12px;margin:12px 0}
+.option{display:block;margin:8px 0;padding:10px 12px;background:#f7f8f5;border-radius:8px}
+button.check{border:0;background:#6b8f71;color:#fff;padding:10px 18px;border-radius:8px;cursor:pointer;margin-top:8px}
+.small{color:#888;font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="lessonTitle">我的學習樂園</h1>
+  <p id="lessonMeta">正在載入教材…</p>
+</header>
+<main id="app">
+  <div id="tabs" class="tabs"></div>
+  <section class="card"><div id="content" class="loading">📚 正在載入教材，請稍候…</div></section>
+</main>
+<script>
+const DATA_FILE = './四年級_第一課_水陸小高手_教材資料.json';
+let lessonData=null, current=0;
+
+function esc(v=''){
+  return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+function rich(v=''){ return v || ''; }
+
+function renderTabs(){
+  const tabs=document.getElementById('tabs');
+  tabs.innerHTML=lessonData.sections.map((s,i)=>
+    `<button class="tab ${i===current?'active':''}" onclick="showSection(${i})">${esc(s.name)}</button>`
+  ).join('');
+}
+function showSection(i){
+  current=i; renderTabs();
+  const s=lessonData.sections[i], d=s.data||{};
+  const box=document.getElementById('content');
+  let body='';
+  const images=(d.images||[]).filter(Boolean);
+
+  if(s.type==='lesson'){
+    if(images.length) body+=`<div class="image-list">${images.map(x=>`<img class="lesson-image" src="${x}">`).join('')}</div>`;
+    if(d.text) body+=`<div class="content">${rich(d.text)}</div>`;
+  } else if(['text','imageText','custom'].includes(s.type)){
+    if(images.length) body+=`<div class="image-list">${images.map(x=>`<img class="lesson-image" src="${x}">`).join('')}</div>`;
+    body+= d.text ? `<div class="content">${rich(d.text)}</div>` : '<p class="small">這個區塊尚未輸入內容。</p>';
+  } else if(s.type==='rhetoric'){
+    if(d.intro) body+=`<div class="content">${rich(d.intro)}</div>`;
+    if(images.length) body+=`<div class="image-list">${images.map(x=>`<img class="lesson-image" src="${x}">`).join('')}</div>`;
+    body+=(d.items||[]).map((x,n)=>`<div class="item"><b>${n+1}. ${esc(x.name)}</b><br><span class="label">課文例句：</span>${esc(x.sentence)}<br><span class="label">分析／說明：</span>${esc(x.analysis)}</div>`).join('');
+  } else if(s.type==='characters'){
+    if(d.intro) body+=`<div class="content">${rich(d.intro)}</div>`;
+    body+=(d.items||[]).map((x,n)=>`<div class="item"><b>${n+1}. ${esc(x.word)}</b><br><span class="label">詞性：</span>${esc(x.pos)}　<span class="label">部首：</span>${esc(x.rad)}　<span class="label">筆畫：</span>${esc(x.stroke)}<br><span class="label">解釋：</span>${esc(x.meaning)}</div>`).join('');
+  } else if(s.type==='sound'){
+    if(d.intro) body+=`<div class="content">${rich(d.intro)}</div>`;
+    body+=(d.items||[]).map((x,n)=>`<div class="item"><b>${n+1}. ${esc(x.word||x.sound||'')}</b><br><span class="label">例詞：</span>${esc(x.example||'')}<br><span class="label">例詞解釋：</span>${esc(x.meaning||x.exampleMeaning||'')}</div>`).join('');
+  } else if(s.type==='words'){
+    if(d.intro) body+=`<div class="content">${rich(d.intro)}</div>`;
+    body+=(d.items||[]).map((x,n)=>`<div class="item"><b>${n+1}. ${esc(x.word||'')}</b><br><span class="label">圈詞解釋：</span>${esc(x.meaning||'')}<br><span class="label">相近詞：</span>${esc(x.similar||'')}</div>`).join('');
+  } else if(s.type==='idioms'){
+    if(d.intro) body+=`<div class="content">${rich(d.intro)}</div>`;
+    body+=(d.items||[]).map((x,n)=>`<div class="item"><b>${n+1}. ${esc(x.word||x.idiom||'')}</b><br><span class="label">意思：</span>${esc(x.meaning||'')}<br><span class="label">例句：</span>${esc(x.example||'')}</div>`).join('');
+  } else if(s.type==='sentence'){
+    if(d.intro) body+=`<div class="content">${rich(d.intro)}</div>`;
+    body+=(d.items||[]).map((x,n)=>`<div class="item"><b>${n+1}. ${esc(x.pattern||x.sentence||'')}</b><br>${esc(x.example||x.note||'')}</div>`).join('');
+  } else if(s.type==='challenge'){
+    if(d.intro) body+=`<div class="content">${rich(d.intro)}</div>`;
+    body+=(d.items||[]).map((q,n)=>{
+      const opts=q.options||[];
+      return `<div class="challenge"><b>第 ${n+1} 題：${esc(q.question||'')}</b>${opts.map((o,k)=>`<label class="option"><input type="radio" name="q${n}" value="${k}"> ${esc(o)}</label>`).join('')}<button class="check" onclick="checkAnswer(${n},${JSON.stringify(q.answer||'').replace(/"/g,'&quot;')})">檢查答案</button><div id="result${n}"></div></div>`;
+    }).join('');
+  } else {
+    if(d.intro) body+=`<div class="content">${rich(d.intro)}</div>`;
+    body+='<p class="small">這個教材區塊尚未有可顯示的內容。</p>';
+  }
+  box.innerHTML=`<h2>${esc(s.name)}</h2>${body||'<p class="small">這個區塊尚未輸入內容。</p>'}`;
+}
+function checkAnswer(n,answer){
+  const checked=document.querySelector(`input[name="q${n}"]:checked`);
+  const r=document.getElementById('result'+n);
+  if(!checked){r.textContent='請先選擇答案 😊';return;}
+  r.textContent=(String(checked.value)===String(answer))?'答對了！🎉':'再想一想，加油！💪';
+}
+async function init(){
+  try{
+    const res=await fetch(DATA_FILE);
+    if(!res.ok) throw new Error('找不到教材資料檔');
+    lessonData=await res.json();
+    document.getElementById('lessonTitle').textContent=`📚 ${lessonData.lessonNo}｜${lessonData.lessonTitle}`;
+    document.getElementById('lessonMeta').textContent=`${lessonData.subject}・${lessonData.stage} ${lessonData.grade}・${lessonData.semester}`;
+    renderTabs(); showSection(0);
+  }catch(e){
+    document.getElementById('content').innerHTML=`<div class="error"><h2>教材載入失敗</h2><p>${esc(e.message)}</p><p class="small">請確認 JSON 檔和 lesson1.html 位於同一個 GitHub 資料夾，且檔名完全相同。</p></div>`;
+    console.error(e);
+  }
+}
+init();
+</script>
+</body>
+</html>
