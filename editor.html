@@ -81,15 +81,15 @@ button:hover{filter:brightness(.98)}
 <script>
 const base=[
  ['📖 課文','lesson',{text:'',images:[]}],
- ['🧱 課文結構','text',{text:''}],
- ['💡 課文大意','text',{text:''}],
- ['❓ 閱讀理解','text',{text:''}],
+ ['🧱 課文結構','imageText',{text:'',images:[]}],
+ ['💡 課文大意','imageText',{text:'',images:[]}],
+ ['❓ 閱讀理解','imageText',{text:'',images:[]}],
  ['✏️ 生字','characters',{intro:'',items:[]}],
  ['🔤 字音字形','sound',{intro:'',items:[]}],
  ['⭕ 圈詞','words',{intro:'',items:[]}],
  ['🚂 成語列車','idioms',{intro:'',items:[]}],
  ['💬 句型','sentence',{intro:'',items:[]}],
- ['✨ 修辭分析','text',{text:''}],
+ ['✨ 修辭分析','rhetoric',{intro:'',items:[],images:[]}],
  ['🏆 大挑戰','challenge',{intro:'',items:[]}]
 ].map((x,i)=>({id:'s'+i,name:x[0],type:x[1],data:x[2]}));
 
@@ -158,6 +158,18 @@ function build(){
  if(s.type==='text'){
    form.innerHTML=richEditor('文字編輯','textRich',d.text); return;
  }
+ if(s.type==='imageText'){
+   h='<p class="small">可上傳整理好的教材圖片，也可加入補充文字。</p>'
+    +richEditor('補充文字（選填）','textRich',d.text)
+    +'<div class="field"><label>教材圖片</label><div id="imgs" class="images"></div></div>';
+   form.innerHTML=h;renderImages();return;
+ }
+ if(s.type==='rhetoric'){
+   h=richEditor('文字編輯（整體說明）','introRich',d.intro)
+    +'<div class="field"><label>修辭分析圖片（選填）</label><div id="imgs" class="images"></div></div>'
+    +'<div id="items"></div><button onclick="addItem()">＋ 新增修辭分析</button>';
+   form.innerHTML=h;renderImages();renderItems();return;
+ }
  if(s.type==='characters')h=richEditor('文字編輯（整體說明）','introRich',d.intro);
  if(s.type==='sound')h=richEditor('文字編輯（整體說明）','introRich',d.intro);
  if(s.type==='words')h=richEditor('文字編輯（整體說明）','introRich',d.intro);
@@ -177,7 +189,8 @@ function build(){
 function renderImages(){
  imgs.innerHTML='';
  const a=data.sections[cur].data.images||[];
- for(let i=0;i<Math.max(4,a.length);i++){
+ const minSlots=data.sections[cur].type==='lesson'?4:Math.max(1,a.filter(Boolean).length+1);
+ for(let i=0;i<Math.max(minSlots,a.length);i++){
    const box=document.createElement('div');
    box.className='image';
    if(a[i]) box.innerHTML=`<img src="${a[i]}"><button class="danger" style="position:absolute;right:5px;top:5px" onclick="clearImage(${i})">×</button>`;
@@ -201,6 +214,9 @@ function renderItems(){
  a.forEach((x,i)=>{
    const d=document.createElement('div');d.className='repeat';
    let h=`<div class="head"><b>${i+1}</b><button class="danger" onclick="removeItem(${i})">刪除</button></div>`;
+   if(s.type==='rhetoric')h+=field('修辭名稱','a'+i+'_name',x.name)
+     +field('課文例句','a'+i+'_sentence',x.sentence,true)
+     +field('分析／說明','a'+i+'_analysis',x.analysis,true);
    if(s.type==='characters')h+=`<div class="formgrid">
      ${field('生字','a'+i+'_word',x.word)}
      ${field('詞性','a'+i+'_pos',x.pos)}
@@ -227,7 +243,8 @@ function renderItems(){
 
 function addItem(){
  const s=data.sections[cur];
- if(s.type==='characters')s.data.items.push({word:'',pos:'',rad:'',stroke:'',meaning:''});
+ if(s.type==='rhetoric')s.data.items.push({name:'',sentence:'',analysis:''});
+ else if(s.type==='characters')s.data.items.push({word:'',pos:'',rad:'',stroke:'',meaning:''});
  else if(s.type==='sound')s.data.items.push({word:'',example:'',meaning:''});
  else if(s.type==='words')s.data.items.push({word:'',meaning:'',similar:''});
  else if(s.type==='idioms')s.data.items.push({word:'',meaning:'',example:''});
@@ -240,13 +257,15 @@ function removeItem(i){data.sections[cur].data.items.splice(i,1);renderItems()}
 function captureCurrent(){
  if(cur<0)return;
  const s=data.sections[cur],d=s.data;
- if(s.type==='lesson'||s.type==='text'||s.type==='custom'){
+ if(s.type==='lesson'||s.type==='text'||s.type==='imageText'||s.type==='custom'){
    if($('textRich'))d.text=$('textRich').innerHTML;
  }
+ if(s.type==='rhetoric'&&$('introRich'))d.intro=$('introRich').innerHTML;
  if(s.type==='custom'&&$('customName'))s.name='📌 '+($('customName').value||'未命名區塊');
- if(['characters','sound','words','idioms','sentence','challenge'].includes(s.type)){
+ if(['characters','sound','words','idioms','sentence','challenge','rhetoric'].includes(s.type)){
    if($('introRich'))d.intro=$('introRich').innerHTML;
    d.items=(d.items||[]).map((x,i)=>{
+     if(s.type==='rhetoric')return{name:$('a'+i+'_name').value,sentence:$('a'+i+'_sentence').value,analysis:$('a'+i+'_analysis').value};
      if(s.type==='characters')return{word:$('a'+i+'_word').value,pos:$('a'+i+'_pos').value,rad:$('a'+i+'_rad').value,stroke:$('a'+i+'_stroke').value,meaning:$('a'+i+'_meaning').value};
      if(s.type==='sound')return{word:$('a'+i+'_word').value,example:$('a'+i+'_example').value,meaning:$('a'+i+'_meaning').value};
      if(s.type==='words')return{word:$('a'+i+'_word').value,meaning:$('a'+i+'_meaning').value,similar:$('a'+i+'_similar').value};
@@ -270,8 +289,17 @@ function preview(capture=true){
  if(s.type==='lesson'){
    if(d.images?.filter(Boolean).length)h+='<div class="lessonimgs">'+d.images.filter(Boolean).map(x=>`<img src="${x}">`).join('')+'</div>';
    h+='<div class="rtl preview-text">'+formatPreviewHtml(d.text||'')+'</div>';
+ }else if(s.type==='imageText'){
+   if(d.images?.filter(Boolean).length)h+='<div class="lessonimgs">'+d.images.filter(Boolean).map(x=>`<img src="${x}">`).join('')+'</div>';
+   if(d.text)h+='<div class="preview-text">'+formatPreviewHtml(d.text)+'</div>';
+   if(!d.images?.filter(Boolean).length&&!d.text)h+='<span class="small">尚未輸入內容或上傳圖片</span>';
  }else if(['text','custom'].includes(s.type)){
    h+=(d.text||'<span class="small">尚未輸入內容</span>');
+ }else if(s.type==='rhetoric'){
+   h+=(d.intro||'');
+   if(d.images?.filter(Boolean).length)h+='<div class="lessonimgs">'+d.images.filter(Boolean).map(x=>`<img src="${x}">`).join('')+'</div>';
+   h+=(d.items||[]).map((x,i)=>`<div class="repeat"><b>${i+1}. ${esc(x.name)}</b><br><b>課文例句：</b>${esc(x.sentence)}<br><b>分析／說明：</b>${esc(x.analysis)}</div>`).join('');
+   if(!d.intro&&!d.images?.filter(Boolean).length&&!(d.items||[]).length)h+='<span class="small">尚未輸入內容</span>';
  }else{
    h+=(d.intro||'');
    h+=(d.items||[]).map((x,i)=>{
@@ -353,14 +381,14 @@ function normalize(){
  if(!data.sections||!Array.isArray(data.sections))data.sections=structuredClone(base);
  data.sections.forEach(s=>{
    if(!s.data)s.data={};
-   if(['lesson','text','custom'].includes(s.type)&&s.data.text!=null&&!String(s.data.text).includes('<')){
+   if(['lesson','text','imageText','custom'].includes(s.type)&&s.data.text!=null&&!String(s.data.text).includes('<')){
      s.data.text=plainToHtml(s.data.text);
    }
-   if(['characters','sound','words','idioms','sentence','challenge'].includes(s.type)&&s.data.intro!=null&&!String(s.data.intro).includes('<')){
+   if(['characters','sound','words','idioms','sentence','challenge','rhetoric'].includes(s.type)&&s.data.intro!=null&&!String(s.data.intro).includes('<')){
      s.data.intro=plainToHtml(s.data.intro);
    }
-   if(s.type==='lesson'&&!Array.isArray(s.data.images))s.data.images=[];
-   if(['characters','sound','words','idioms','sentence','challenge'].includes(s.type)&&!Array.isArray(s.data.items))s.data.items=[];
+   if(['lesson','imageText','rhetoric'].includes(s.type)&&!Array.isArray(s.data.images))s.data.images=[];
+   if(['characters','sound','words','idioms','sentence','challenge','rhetoric'].includes(s.type)&&!Array.isArray(s.data.items))s.data.items=[];
  });
 }
 function init(){
