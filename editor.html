@@ -26,7 +26,7 @@ button:hover{filter:brightness(.98)}
 .images{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;direction:rtl}
 .image{min-height:140px;border:2px dashed #cbd3e2;border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;background:#fafcff}
 .image img{width:100%;height:100%;object-fit:contain}.image label{padding:10px;text-align:center;cursor:pointer}.image input{display:none}
-.preview{background:#f8f9fc;border-radius:14px;padding:18px;min-height:150px;line-height:1.8}.rtl{direction:rtl;text-align:right}
+.preview{background:#f8f9fc;border-radius:14px;padding:18px;min-height:150px;line-height:1.8}.rtl{direction:rtl;text-align:right}.preview-text{white-space:pre-wrap}.preview-text p,.preview-text div{margin:0 0 .9em}.preview-text p:last-child,.preview-text div:last-child{margin-bottom:0}
 .lessonimgs{direction:rtl;display:flex;gap:10px;overflow:auto}.lessonimgs img{max-height:350px;border-radius:8px}
 .question{border:1px solid var(--line);padding:14px;border-radius:12px;margin:10px 0}
 .rich-wrap{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
@@ -190,7 +190,7 @@ function renderImages(){
 function readImage(e,i){
  const f=e.target.files[0];if(!f)return;
  const r=new FileReader();
- r.onload=()=>{data.sections[cur].data.images[i]=r.result;renderImages();preview(false)};
+ r.onload=()=>{data.sections[cur].data.images[i]=r.result; saveAll(); renderImages(); preview(false)};
  r.readAsDataURL(f);
 }
 function clearImage(i){data.sections[cur].data.images[i]='';renderImages();preview(false)}
@@ -259,8 +259,8 @@ function captureCurrent(){
 
 function saveCurrent(){
  if(cur<0)return;
- captureCurrent();sync();saveAll();renderList();preview(false);
- alert('已儲存！');
+ captureCurrent();sync();const ok=saveAll();renderList();preview(false);
+ if(ok)alert('已儲存！');
 }
 function preview(capture=true){
  if(cur<0)return;
@@ -269,7 +269,7 @@ function preview(capture=true){
  let h='<h3>'+esc(s.name)+'</h3>';
  if(s.type==='lesson'){
    if(d.images?.filter(Boolean).length)h+='<div class="lessonimgs">'+d.images.filter(Boolean).map(x=>`<img src="${x}">`).join('')+'</div>';
-   h+='<div class="rtl">'+(d.text||'')+'</div>';
+   h+='<div class="rtl preview-text">'+formatPreviewHtml(d.text||'')+'</div>';
  }else if(['text','custom'].includes(s.type)){
    h+=(d.text||'<span class="small">尚未輸入內容</span>');
  }else{
@@ -284,6 +284,29 @@ function preview(capture=true){
    }).join('');
  }
  $('preview').innerHTML=h||'<span class="small">尚未輸入內容</span>';
+}
+
+
+function formatPreviewHtml(html){
+  if(!html)return '<span class="small">尚未輸入內容</span>';
+  // 保留編輯器的粗體、顏色與其他 HTML 格式；同時把純文字中的換行轉成真正換行。
+  const box=document.createElement('div');
+  box.innerHTML=html;
+  const walk=node=>{
+    [...node.childNodes].forEach(n=>{
+      if(n.nodeType===Node.TEXT_NODE && /\n/.test(n.nodeValue)){
+        const parts=n.nodeValue.split(/\n/);
+        const frag=document.createDocumentFragment();
+        parts.forEach((part,i)=>{
+          if(part)frag.appendChild(document.createTextNode(part));
+          if(i<parts.length-1)frag.appendChild(document.createElement('br'));
+        });
+        n.replaceWith(frag);
+      }else if(n.nodeType===Node.ELEMENT_NODE)walk(n);
+    });
+  };
+  walk(box);
+  return box.innerHTML;
 }
 
 function addCustom(){
@@ -304,7 +327,14 @@ function sync(){
 function saveAll(){
  if(cur>=0)captureCurrent();
  sync();
- localStorage.setItem('editorDataV4',JSON.stringify(data));
+ try{
+   localStorage.setItem('editorDataV4',JSON.stringify(data));
+   return true;
+ }catch(e){
+   console.error(e);
+   alert('圖片或教材資料太大，瀏覽器暫時無法儲存。請先下載教材資料備份，再重新整理圖片大小後儲存。');
+   return false;
+ }
 }
 function download(){
  saveAll();
